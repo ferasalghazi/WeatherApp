@@ -19,7 +19,7 @@ const About = () => {
             <div className="info_data">
                  <div className="data">
                     <h4>Email</h4>
-                    <p>Feras@gmail.com</p>
+                    <p>fal-ghazi@htwsaar.de</p>
                  </div>
                  <div className="data">
                    <h4>Phone</h4>
