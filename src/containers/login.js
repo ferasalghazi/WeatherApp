@@ -37,7 +37,7 @@ const Login = () => {
       if (response.data) {
         // Assuming the API returns user information along with the token
         setUser(response.data.user_profile);
-        alert("succes credentials");
+      
         navigate("/home");
         console.log(user);
       } else {
