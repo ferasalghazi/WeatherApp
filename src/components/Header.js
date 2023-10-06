@@ -16,14 +16,16 @@ import { useTheme } from "../Router/ThemeContext";
 
 const Header = () => {
   
-  const { user } = useUserContext();
+  const { user  , setUser} = useUserContext();
   const { isDarkMode, toggleTheme } = useTheme();
-
+const signout = () => {
+  setUser(null);
+}
   const iconTheme = isDarkMode ? faSun : faMoon;
   return (
     <header>
       <div>
-        <h1> DeutschWeather</h1>
+        <h1> Weather App</h1>
       </div>
       {user ? (
       <nav>
@@ -60,7 +62,7 @@ const Header = () => {
       
         <Link to="/">
          <label>Welocme {user.firstname} </label>
-          <FontAwesomeIcon icon={faSignOut}   />
+          <FontAwesomeIcon icon={faSignOut}  onClick={signout} />
         </Link>
         <FontAwesomeIcon icon={iconTheme} onClick={toggleTheme} />
       </div>
