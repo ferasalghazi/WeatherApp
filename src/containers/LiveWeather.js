@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+import Sunnyimg from '../assets/Sunny.jpeg'; 
+import hazyimg from '../assets/Hazy.jpeg'; 
+import Cloudyimg from '../assets/Cloudy.jpeg'; 
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSun,
@@ -6,6 +10,7 @@ import {
   faAlignJustify,
 } from "@fortawesome/free-solid-svg-icons";
 const LiveWeather = () => {
+  
   const [selectedStation, setselectedStation] = useState("1");
   const [Record, setRecord] = useState({
     device: "1",
@@ -22,6 +27,56 @@ const LiveWeather = () => {
     predicted_preasure: "79.0",
     predicted_temperature: "21.82",
   });
+
+  function generateRandomNumber() {
+    // Generate a random number between 0 and 2
+    const randomNumber = Math.random() * 3;
+  
+    // Shift the range to -1 to 1
+    const scaledRandomNumber = randomNumber - 1;
+  
+    return  parseFloat(scaledRandomNumber).toFixed(2);
+  }
+
+  const determineBackgroundImage = () => {
+    if (Record.tempdeg > 25) {
+      return `url(${Sunnyimg})`;
+    } else if (Record.tempdeg > 10) {
+      return `url(${Cloudyimg})`;
+    } else {
+      return `url(${hazyimg})`;
+    }
+  };
+
+  const divStyle = {
+    backgroundImage: determineBackgroundImage(),
+  };
+
+
+  const getTemperatureIcon = () => {
+    const tempValue = parseFloat(Record.tempdeg);
+
+    if (tempValue > 25) {
+      return faSun;
+    } else if (tempValue >= 10 && tempValue <= 25) {
+      return faCloud;
+    } else {
+      return faAlignJustify;
+    }
+  };
+
+
+  const gettempweather = () => {
+    const tempValue = parseFloat(Record.tempdeg);
+
+    if (tempValue > 25) {
+      return "Sunny";
+    } else if (tempValue >= 10 && tempValue <= 25) {
+      return "Cloudy";
+    } else {
+      return "Hazy";
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -91,21 +146,20 @@ const LiveWeather = () => {
       });
 
       const lresult = Predicatedata[Predicatedata.length - 1];
-      const random = Math.random();
 
-      // Scale and shift the random number to be between -5.00 and 5.00
-      const scaledRandom = random * 10.0 - 5.0;
-      const scal = parseFloat(scaledRandom.toFixed(2));
 
-      // Assuming lresult.predicted_gas is a string representing a float
-      const gas = parseFloat(lresult.predicted_gas);
-      
-      const totalGas = gas + scal;
-     console.log(totalGas)
+     
+
+    
+      const humpre =  parseFloat(lresult.predicted_hum) + parseFloat(generateRandomNumber())  ;
+      const prepre =  parseFloat(lresult.predicted_preasure) + parseFloat(generateRandomNumber())  ;
+      const gaspre =  parseFloat(lresult.predicted_gas) + parseFloat(generateRandomNumber())  ;
+
+  
       let finalob = {
-        predicted_gas: parseFloat(gas).toFixed(2) ,
-        predicted_hum: parseFloat(lresult.predicted_hum).toFixed(2) ,
-        predicted_preasure: parseFloat(lresult.predicted_preasure).toFixed(2),
+        predicted_gas: parseFloat(gaspre).toFixed(2) ,
+        predicted_hum: parseFloat(humpre).toFixed(2) ,
+        predicted_preasure: parseFloat(prepre).toFixed(2),
         predicted_temperature: parseFloat(lresult.predicted_temperature).toFixed(2),
       }
       setPrecite(finalob);
@@ -117,17 +171,22 @@ const LiveWeather = () => {
   useEffect(() => {
     fetchData();
     fetchPredicate();
+    getTemperatureIcon();
+
+    const intervalId = setInterval(fetchData, 3000);
+    // Clear the interval when the component is unmounted
+    return () => clearInterval(intervalId);
   }, [selectedStation]);
 
   return (
     <main className="live">
-      <div className="card first-card">
+      <div className="card first-card" style={divStyle}>
         <div className="card-block">
           <div className="card-title">
-            <FontAwesomeIcon icon={faSun} />
-            <small>Sunny</small>
+            <FontAwesomeIcon icon={getTemperatureIcon()} />
+            <small>{gettempweather()}</small>
             <h1>{Record.tempdeg}°</h1>
-            <small>42°/28°</small>
+            <small>{parseInt(Record.tempdeg) +5 + "°"+ "/"  + parseInt(Record.tempdeg-5) + "°"} </small>
           </div>
           <div className="card-text">
             <h4>{Record.time}</h4>
@@ -146,40 +205,40 @@ const LiveWeather = () => {
             </select>
           </div>
           <div className="card-list">
-            <label className="btnlabel btn-secondary">Temperature</label>
-            <label className="btnlabel primary">Humidity</label>
-            <label className="btnlabel btn-success">Atmospheric Pressure</label>
-            <label className="btnlabel btn-warning">Gas</label>
+            <label className="btnlabel btn-red" >Temperature</label>
+            <label className="btnlabel btn-blue">Humidity</label>
+            <label className="btnlabel btn-yellow">Atmospheric Pressure</label>
+            <label className="btnlabel btn-green">Gas</label>
           </div>
           <div className="card-select">
-            <label>Predicted Weather For Next time </label>
+            <label>Current Data </label>
           </div>
           <div className="card-list">
-            <label className="btnlabel btn-secondary">
+            <label className="btnlabel btn-red">
               {Record.tempdeg} (°C)
             </label>
             <label className="btnlabel btn-primary">{Record.humdeg} (%)</label>
-            <label className="btnlabel btn-success">
+            <label className="btnlabel btn-yellow">
               {Record.preasure} (hpa/10)
             </label>
-            <label className="btnlabel btn-warning">{Record.gas} (K0hms)</label>
+            <label className="btnlabel btn-green">{Record.gas} (K0hms)</label>
           </div>
 
           <div className="card-select">
             <label>Predicted Weather For Next time </label>
           </div>
           <div className="card-list">
-            <label className="btnlabel btn-secondary">
-              {Precite.predicted_temperature}
+            <label className="btnlabel btn-red">
+              {Precite.predicted_temperature}  (°C)
             </label>
             <label className="btnlabel btn-primary">
-              {Precite.predicted_hum}
+         {Precite.predicted_hum} (%)
             </label>
-            <label className="btnlabel btn-success">
-              {Precite.predicted_preasure}
+            <label className="btnlabel btn-yellow">
+              {Precite.predicted_preasure} (hpa/10)
             </label>
-            <label className="btnlabel btn-warning">
-              {Precite.predicted_gas}
+            <label className="btnlabel btn-green">
+              {Precite.predicted_gas} (K0hms)
             </label>
           </div>
         </div>
