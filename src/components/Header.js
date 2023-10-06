@@ -13,15 +13,24 @@ import {
   faSignOut
 } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "../Router/ThemeContext";
-
+import { useNavigate } from "react-router-dom";
 const Header = () => {
-  
+  const navigate = useNavigate();
   const { user  , setUser} = useUserContext();
   const { isDarkMode, toggleTheme } = useTheme();
 const signout = () => {
   setUser(null);
 }
+    const logging = () => {
+    if(!user){
+      navigate("/");
+    }
+  }
   const iconTheme = isDarkMode ? faSun : faMoon;
+  useEffect(() => {
+  const intervalId = setInterval(logging, 1000);
+  return () => clearInterval(intervalId);
+}, [user]);
   return (
     <header>
       <div>
