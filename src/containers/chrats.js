@@ -24,7 +24,7 @@ ChartJS.register(
 const Charts = () => {
   const [selectedTimeRange, setSelectedTimeRange] = useState("Today");
   const [selectedStation, setselectedStation] = useState("1");
-
+  const [labelx , setlabelx] = useState("Time (hour)");
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: [
@@ -40,7 +40,7 @@ const Charts = () => {
         borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
-      
+
       {
         label: "Atmospheric pressure (pa)",
         data: [],
@@ -72,7 +72,7 @@ const Charts = () => {
       x: {
         title: {
           display: true,
-          text: "Time (hour)",
+          text: labelx,
         },
       },
       y: {
@@ -81,302 +81,325 @@ const Charts = () => {
     },
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "http://albrecht.pythonanywhere.com/get_data"
-        );
-        const data = await response.json();
-          const devicedata =    data.data.filter(item => item.device === selectedStation);
 
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        "http://albrecht.pythonanywhere.com/get_data"
+      );
+      const data = await response.json();
+      const devicedata = data.data.filter(
+        (item) => item.device === selectedStation
+      );
 
-        const filteredData = devicedata.filter((entry) => {
-          const entryDate = new Date(entry.date);
-          const currentDate = new Date();
+      const filteredData = devicedata.filter((entry) => {
+        const entryDate = new Date(entry.date);
+        const currentDate = new Date();
 
-          if (selectedTimeRange === "Today") {
-            return entryDate.toDateString() === currentDate.toDateString();
-          } else if (selectedTimeRange === "Last week") {
-            const oneWeekAgo = new Date();
-            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-            return entryDate >= oneWeekAgo;
-          } else if (selectedTimeRange === "Last Month") {
-            const lastMonth = new Date();
-            lastMonth.setMonth(lastMonth.getMonth() - 1);
-            return entryDate >= lastMonth;
-          } else if (selectedTimeRange === "Last Year") {
-            const lastYear = new Date();
-            lastYear.setFullYear(lastYear.getFullYear() - 1);
-            return entryDate >= lastYear;
-          }
+        if (selectedTimeRange === "Today") {
+          return entryDate.toDateString() === currentDate.toDateString();
+        } else if (selectedTimeRange === "Last week") {
+          const oneWeekAgo = new Date();
+          oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+          return entryDate >= oneWeekAgo;
+        } else if (selectedTimeRange === "Last Month") {
+          const lastMonth = new Date();
+          lastMonth.setMonth(lastMonth.getMonth() - 1);
+          return entryDate >= lastMonth;
+        } else if (selectedTimeRange === "Last Year") {
+          const lastYear = new Date();
+          lastYear.setFullYear(lastYear.getFullYear() - 1);
+          return entryDate >= lastYear;
+        }
 
-          return false;
-        });
+        return false;
+      });
 
-         // Sorting the filtered data by time
-         filteredData.sort((a, b) => {
-          const timeA = new Date(a.date);
-          const timeB = new Date(b.date);
-          return timeA - timeB;
-        });
+      // Sorting the filtered data by time
+      filteredData.sort((a, b) => {
+        const timeA = new Date(a.date);
+        const timeB = new Date(b.date);
+        return timeA - timeB;
+      });
 
-        const dailyAverages = {};
-        const monthlyAverages = {};
+      const dailyAverages = {};
+      const monthlyAverages = {};
 
+      for (const item of filteredData) {
+        const date = item.date.split(" ")[0];
+        const humdeg = parseFloat(item.humdeg);
+        const tempdeg = parseFloat(item.tempdeg);
+        const predeg = parseFloat(item.preasure);
+        const gasdeg = parseFloat(item.gas);
+        if (!dailyAverages[date]) {
+          dailyAverages[date] = {
+            totalHumdeg: humdeg,
+            totalTempdeg: tempdeg,
+            totalPredeg: predeg,
+            totalGasdeg: gasdeg,
+            count: 1,
+          };
+        } else {
+          dailyAverages[date].totalHumdeg += humdeg;
+          dailyAverages[date].totalTempdeg += tempdeg;
+          dailyAverages[date].totalPredeg += predeg;
+          dailyAverages[date].totalGasdeg += gasdeg;
+          dailyAverages[date].count++;
+        }
+
+        if (!monthlyAverages[date]) {
+          const yearMonth = date.split("-").slice(0, 2).join("-");
+          monthlyAverages[yearMonth] = {
+            totalHumdeg: humdeg,
+            totalTempdeg: tempdeg,
+            totalPredeg: predeg,
+            totalGasdeg: gasdeg,
+            count: 1,
+          };
+        } else {
+          const yearMonth = date.split("-").slice(0, 2).join("-");
+          monthlyAverages[yearMonth].totalHumdeg += humdeg;
+          monthlyAverages[yearMonth].totalTempdeg += tempdeg;
+          monthlyAverages[yearMonth].totalPredeg += predeg;
+          monthlyAverages[yearMonth].totalGasdeg += gasdeg;
+
+          monthlyAverages[yearMonth].count++;
+        }
+      }
+
+      const dailyAverageArray = Object.entries(dailyAverages).map(
+        ([
+          date,
+          { totalHumdeg, totalTempdeg, totalPredeg, totalGasdeg, count },
+        ]) => ({
+          date: date.split("-")[2],
+          averageHumdeg: totalHumdeg / count,
+          averageTempdeg: totalTempdeg / count,
+          averagePredeg: totalPredeg / count,
+          averageGasdeg: totalGasdeg / count,
+        })
+      );
+
+      const monthlyAverageArray = Object.entries(monthlyAverages).map(
+        ([
+          yearMonth,
+          { totalHumdeg, totalTempdeg, totalPredeg, totalGasdeg, count },
+        ]) => {
+          const [year, month] = yearMonth.split("-");
+          return {
+            year: parseInt(year, 10),
+            month: parseInt(month, 10),
+            averageHumdeg: totalHumdeg / count,
+            averageTempdeg: totalTempdeg / count,
+            averagePredeg: totalPredeg / count,
+            averageGasdeg: totalGasdeg / count,
+          };
+        }
+      );
+
+      const tempData = filteredData.map((entry) => parseFloat(entry.tempdeg));
+      const humData = filteredData.map((entry) => parseFloat(entry.humdeg));
+      const presData = filteredData.map((entry) =>
+        parseFloat(entry.preasure)
+      );
+      const gasData = filteredData.map((entry) => parseFloat(entry.gas));
+
+      if (selectedTimeRange === "Last week") {
+        setlabelx("Days of week");
+        const dailyAveragesLastWeek = {};
         for (const item of filteredData) {
           const date = item.date.split(" ")[0];
           const humdeg = parseFloat(item.humdeg);
           const tempdeg = parseFloat(item.tempdeg);
           const predeg = parseFloat(item.preasure);
           const gasdeg = parseFloat(item.gas);
-          if (!dailyAverages[date]) {
-            dailyAverages[date] = {
+
+          if (!dailyAveragesLastWeek[date]) {
+            dailyAveragesLastWeek[date] = {
               totalHumdeg: humdeg,
               totalTempdeg: tempdeg,
-              totalPredeg: predeg ,
-              totalGasdeg:  gasdeg ,
+              totalPredeg: predeg,
+              totalGasdeg: gasdeg,
               count: 1,
             };
           } else {
-            dailyAverages[date].totalHumdeg += humdeg;
-            dailyAverages[date].totalTempdeg += tempdeg;
-            dailyAverages[date].totalPredeg += predeg;
-            dailyAverages[date].totalGasdeg += gasdeg;
-            dailyAverages[date].count++;
-          }
-
-          if (!monthlyAverages[date]) {
-            const yearMonth = date.split("-").slice(0, 2).join("-");
-            monthlyAverages[yearMonth] = {
-              totalHumdeg: humdeg,
-              totalTempdeg: tempdeg,
-              totalPredeg: predeg ,
-              totalGasdeg:  gasdeg ,
-              count: 1,
-            };
-          } else {
-            const yearMonth = date.split("-").slice(0, 2).join("-");
-            monthlyAverages[yearMonth].totalHumdeg += humdeg;
-            monthlyAverages[yearMonth].totalTempdeg += tempdeg;
-            monthlyAverages[yearMonth].totalPredeg += predeg;
-            monthlyAverages[yearMonth].totalGasdeg += gasdeg;
-
-            monthlyAverages[yearMonth].count++;
+            dailyAveragesLastWeek[date].totalHumdeg += humdeg;
+            dailyAveragesLastWeek[date].totalTempdeg += tempdeg;
+            dailyAveragesLastWeek[date].totalPredeg += predeg;
+            dailyAveragesLastWeek[date].totalGasdeg += gasdeg;
+            dailyAveragesLastWeek[date].count++;
           }
         }
 
-        const dailyAverageArray = Object.entries(dailyAverages).map(
-          ([date, { totalHumdeg, totalTempdeg , totalPredeg , totalGasdeg, count }]) => ({
-            date: date.split("-")[2],
-            averageHumdeg: totalHumdeg / count,
-            averageTempdeg: totalTempdeg / count,
-            averagePredeg: totalPredeg / count,
-            averageGasdeg: totalGasdeg / count,
-
-          })
-        );
-
-        const monthlyAverageArray = Object.entries(monthlyAverages).map(
-          ([yearMonth, { totalHumdeg, totalTempdeg , totalPredeg , totalGasdeg, count }]) => {
-            const [year, month] = yearMonth.split("-");
-            return {
-              year: parseInt(year, 10),
-              month: parseInt(month, 10),
-              averageHumdeg: totalHumdeg / count,
-              averageTempdeg: totalTempdeg / count,
-              averagePredeg: totalPredeg / count,
-              averageGasdeg: totalGasdeg / count,
-            };
-          }
-        );
-
-        const tempData = filteredData.map((entry) => parseFloat(entry.tempdeg));
-        const humData = filteredData.map((entry) => parseFloat(entry.humdeg));
-        const presData = filteredData.map((entry) => parseFloat(entry.preasure));
-        const gasData = filteredData.map((entry) => parseFloat(entry.gas));
-
-        if (selectedTimeRange === "Last week") {
-          const dailyAveragesLastWeek = {};
-          for (const item of filteredData) {
-            const date = item.date.split(" ")[0];
-            const humdeg = parseFloat(item.humdeg);
-            const tempdeg = parseFloat(item.tempdeg);
-            const predeg = parseFloat(item.preasure);
-            const gasdeg = parseFloat(item.gas);
-
-            if (!dailyAveragesLastWeek[date]) {
-              dailyAveragesLastWeek[date] = {
-                totalHumdeg: humdeg,
-                totalTempdeg: tempdeg,
-                totalPredeg: predeg,
-                totalGasdeg: gasdeg,
-                count: 1,
-              };
-            } else {
-              dailyAveragesLastWeek[date].totalHumdeg += humdeg;
-              dailyAveragesLastWeek[date].totalTempdeg += tempdeg;
-              dailyAveragesLastWeek[date].totalPredeg += predeg;
-              dailyAveragesLastWeek[date].totalGasdeg += gasdeg;
-              dailyAveragesLastWeek[date].count++;
-            }
-          }
-
-          const dailyAverageArrayLastWeek = Object.entries(
-            dailyAveragesLastWeek
-          ).map(([date, { totalHumdeg, totalTempdeg,totalPredeg, totalGasdeg , count }]) => ({
+        const dailyAverageArrayLastWeek = Object.entries(
+          dailyAveragesLastWeek
+        ).map(
+          ([
+            date,
+            { totalHumdeg, totalTempdeg, totalPredeg, totalGasdeg, count },
+          ]) => ({
             date,
             averageHumdeg: totalHumdeg / count,
             averageTempdeg: totalTempdeg / count,
             averagePredeg: totalPredeg / count,
             averageGasdeg: totalGasdeg / count,
-          }));
+          })
+        );
 
-          const labelsLastWeek = dailyAverageArrayLastWeek.map((entry) => {
-            const entryDate = new Date(entry.date);
+        const labelsLastWeek = dailyAverageArrayLastWeek.map((entry) => {
+          const entryDate = new Date(entry.date);
 
-            const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-            return days[entryDate.getDay()];
-          });
+          const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+          return days[entryDate.getDay()];
+        });
 
-          setChartData((prevData) => ({
-            ...prevData,
-            labels: labelsLastWeek,
-            datasets: [
-              {
-                ...prevData.datasets[0],
-                data: dailyAverageArrayLastWeek.map(
-                  (entry) => entry.averageTempdeg
-                ),
-              },
-              {
-                ...prevData.datasets[1],
-                data: dailyAverageArrayLastWeek.map(
-                  (entry) => entry.averageHumdeg
-                ),
-                
-              },
-              {
-                ...prevData.datasets[2],
-                data: dailyAverageArrayLastWeek.map(
-                  (entry) => entry.averagePredeg
-                ),
-                
-              },
-              {
-                ...prevData.datasets[3],
-                data: dailyAverageArrayLastWeek.map(
-                  (entry) => entry.averageGasdeg
-                ),
-                
-              },
-            ],
-          }));
-        } else if (selectedTimeRange === "Last Month") {
-          const labelsLastMonth = dailyAverageArray.map((entry) => entry.date);
+        setChartData((prevData) => ({
+          ...prevData,
+          labels: labelsLastWeek,
+          datasets: [
+            {
+              ...prevData.datasets[0],
+              data: dailyAverageArrayLastWeek.map(
+                (entry) => entry.averageTempdeg
+              ),
+            },
+            {
+              ...prevData.datasets[1],
+              data: dailyAverageArrayLastWeek.map(
+                (entry) => entry.averageHumdeg
+              ),
+            },
+            {
+              ...prevData.datasets[2],
+              data: dailyAverageArrayLastWeek.map(
+                (entry) => entry.averagePredeg
+              ),
+            },
+            {
+              ...prevData.datasets[3],
+              data: dailyAverageArrayLastWeek.map(
+                (entry) => entry.averageGasdeg
+              ),
+            },
+          ],
+        }));
+      } else if (selectedTimeRange === "Last Month") {
+        setlabelx("Days of Month");
 
-          setChartData((prevData) => ({
-            ...prevData,
-            labels: labelsLastMonth,
-            datasets: [
-              {
-                ...prevData.datasets[0],
-                data: dailyAverageArray.map((entry) => entry.averageTempdeg),
-              },
-              {
-                ...prevData.datasets[1],
-                data: dailyAverageArray.map((entry) => entry.averageHumdeg),
-              },
-              {
-                ...prevData.datasets[2],
-                data: dailyAverageArray.map((entry) => entry.averagePredeg),
-              },
-              {
-                ...prevData.datasets[3],
-                data: dailyAverageArray.map((entry) => entry.averageGasdeg),
-              },
-            ],
-          }));
-        } else if (selectedTimeRange === "Last Year") {
-          const labelsLastYear = monthlyAverageArray.map((entry) => {
-            const monthNames = [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "May",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Oct",
-              "Nov",
-              "Dec",
-            ];
-            return `${monthNames[entry.month - 1]} ${entry.year}`;
-          });
+        const labelsLastMonth = dailyAverageArray.map((entry) => entry.date);
 
-          setChartData((prevData) => ({
-            ...prevData,
-            labels: labelsLastYear,
-            datasets: [
-              {
-                ...prevData.datasets[0],
-                data: monthlyAverageArray.map((entry) => entry.averageTempdeg),
-              },
-              {
-                ...prevData.datasets[1],
-                data: monthlyAverageArray.map((entry) => entry.averageHumdeg),
-              },
-              {
-                ...prevData.datasets[2],
-                data: monthlyAverageArray.map((entry) => entry.averagePredeg),
-              },
-              {
-                ...prevData.datasets[3],
-                data: monthlyAverageArray.map((entry) => entry.averageGasdeg),
-              },
-            ],
-          }));
-        } else {
-          const labels = filteredData.map((entry) => {
-            const entryDate = new Date(entry.date);
-         
-            const hours = entryDate.getHours();
-            const minutes = entryDate.getMinutes().toString().padStart(2, "0");
-            return `${hours}:${minutes}`;
-          });
+        setChartData((prevData) => ({
+          ...prevData,
+          labels: labelsLastMonth,
+          datasets: [
+            {
+              ...prevData.datasets[0],
+              data: dailyAverageArray.map((entry) => entry.averageTempdeg),
+            },
+            {
+              ...prevData.datasets[1],
+              data: dailyAverageArray.map((entry) => entry.averageHumdeg),
+            },
+            {
+              ...prevData.datasets[2],
+              data: dailyAverageArray.map((entry) => entry.averagePredeg),
+            },
+            {
+              ...prevData.datasets[3],
+              data: dailyAverageArray.map((entry) => entry.averageGasdeg),
+            },
+          ],
+        }));
+      } else if (selectedTimeRange === "Last Year") {
+        setlabelx("Months of Year");
+        const labelsLastYear = monthlyAverageArray.map((entry) => {
+          const monthNames = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ];
+          return `${monthNames[entry.month - 1]} ${entry.year}`;
+        });
 
-          setChartData((prevData) => ({
-            ...prevData,
-            labels: labels,
-            datasets: [
-              {
-                ...prevData.datasets[0],
-                data: tempData,
-              },
-              {
-                ...prevData.datasets[1],
-                data: humData,
-              },
-              {
-                ...prevData.datasets[2],
-                data: presData,
-              },
-              {
-                ...prevData.datasets[3],
-                data: gasData,
-              },
-            ],
-          }));
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
+        setChartData((prevData) => ({
+          ...prevData,
+          labels: labelsLastYear,
+          datasets: [
+            {
+              ...prevData.datasets[0],
+              data: monthlyAverageArray.map((entry) => entry.averageTempdeg),
+            },
+            {
+              ...prevData.datasets[1],
+              data: monthlyAverageArray.map((entry) => entry.averageHumdeg),
+            },
+            {
+              ...prevData.datasets[2],
+              data: monthlyAverageArray.map((entry) => entry.averagePredeg),
+            },
+            {
+              ...prevData.datasets[3],
+              data: monthlyAverageArray.map((entry) => entry.averageGasdeg),
+            },
+          ],
+        }));
+      } else {
+        const labels = filteredData.map((entry) => {
+          const entryDate = new Date(entry.date);
+
+          const hours = entryDate.getHours();
+          const minutes = entryDate.getMinutes().toString().padStart(2, "0");
+          return `${hours}:${minutes}`;
+        });
+
+        setChartData((prevData) => ({
+          ...prevData,
+          labels: labels,
+          datasets: [
+            {
+              ...prevData.datasets[0],
+              data: tempData,
+            },
+            {
+              ...prevData.datasets[1],
+              data: humData,
+            },
+            {
+              ...prevData.datasets[2],
+              data: presData,
+            },
+            {
+              ...prevData.datasets[3],
+              data: gasData,
+            },
+          ],
+        }));
       }
-    };
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+
+
+  useEffect(() => {
+   
 
     fetchData();
-  }, [selectedTimeRange,selectedStation]);
+    const intervalId = setInterval(fetchData, 3000);
+
+    // Clear the interval when the component is unmounted
+    return () => clearInterval(intervalId);
+  }, [selectedTimeRange, selectedStation]);
 
   return (
     <main className="charts">
@@ -398,8 +421,6 @@ const Charts = () => {
         >
           <option value="1">Main Station</option>
           <option value="2">Second Station</option>
-
-        
         </select>
       </div>
       <div>
