@@ -48,10 +48,21 @@ const About = () => {
       
         <div className="social_media">
             <ul>
-            <li>  <FontAwesomeIcon icon={faTwitter} /></li>
-            <li>  <FontAwesomeIcon icon={faFacebook} /></li>
-            <li>  <FontAwesomeIcon icon={faInstagram} /></li>
+            <li> 
+    <a href="https://www.instagram.com/feras_alghazi" target="_blank">
+    <FontAwesomeIcon icon={faTwitter} />
+    </a>
+    </li>
+            <li> 
+       <a href="https://www.facebook.com/profile.php?id=100005274877265" target="_blank">
+    <FontAwesomeIcon icon={faFacebook} />
+        </a>
+    </li>
+            <li> 
+           <a href="https://www.instagram.com/feras_alghazi" target="_blank">
 
+    <FontAwesomeIcon icon={faInstagram} /></li>
+     </a>
           </ul>
       </div>
     </div>
