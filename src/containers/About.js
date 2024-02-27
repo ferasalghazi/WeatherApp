@@ -2,7 +2,7 @@ import React from "react";
 import imageSrc from '../assets/profile.png'; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDatabase } from "@fortawesome/free-solid-svg-icons";
-import { faTwitter ,faFacebook , faInstagram ,faReact ,faPython } from '@fortawesome/free-brands-svg-icons';
+import { faTelegram ,faFacebook , faInstagram ,faReact ,faPython } from '@fortawesome/free-brands-svg-icons';
 
 const About = () => {
   return (
@@ -49,8 +49,8 @@ const About = () => {
         <div className="social_media">
             <ul>
             <li> 
-    <a href="https://www.instagram.com/feras_alghazi" target="_blank">
-    <FontAwesomeIcon icon={faTwitter} />
+    <a href="t.me/feras_alghazi" target="_blank" >
+    <FontAwesomeIcon icon={faTelegram} />
     </a>
     </li>
             <li> 
@@ -60,9 +60,10 @@ const About = () => {
     </li>
             <li> 
            <a href="https://www.instagram.com/feras_alghazi" target="_blank">
-
-    <FontAwesomeIcon icon={faInstagram} /></li>
-     </a>
+    <FontAwesomeIcon icon={faInstagram} />
+       </a>
+    </li>
+  
           </ul>
       </div>
     </div>
