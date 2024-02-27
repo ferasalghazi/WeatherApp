@@ -11,7 +11,9 @@ const About = () => {
     <div className="left">
    
         <img src={imageSrc}  alt="user" width="100" />
-        <h4>Feras .AA.</h4>
+        <h4>Feras Al Ghazi</h4>
+        <h4>Kommunikationsinformatik B.Sc.</h4>
+
          <p>Student Developer</p>
     </div>
     <div className="right">
@@ -20,11 +22,11 @@ const About = () => {
             <div className="info_data">
                  <div className="data">
                     <h4>Email</h4>
-                    <p>Feras@gmail.com</p>
+                    <p>fal-ghazi@htwsaar.de</p>
                  </div>
                  <div className="data">
                    <h4>Phone</h4>
-                    <p>+4911111111</p>
+                    <p>+49 174 5694307</p>
               </div>
             </div>
         </div>
@@ -33,12 +35,12 @@ const About = () => {
             <h3>Projects</h3>
             <div className="projects_data">
                  <div className="data">
-                    <h4>Recent</h4>
-                    <p>Lorem ipsum dolor sit amet.</p>
+                    <h4>weather app using AI</h4>
+                    <p>Eine Wetter-App zur Visualisierung der Wetterdaten aus einem Wetterstation inklusive einer KI-gestützten Wetterprognose</p>
                  </div>
                  <div className="data">
-                   <h4>Most Viewed</h4>
-                    <p>dolor sit amet.</p>
+                   <h4>Betreuung</h4>
+                    <a href="https://www.htwsaar.de/ingwi/fakultaet/personen/profile/albrecht.kunz">Prof. Dr. Albrecht Kunz</a>
               </div>
             </div>
         </div>
