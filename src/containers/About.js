@@ -1,7 +1,8 @@
 import React from "react";
 import imageSrc from '../assets/profile.png'; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTwitter ,faFacebook , faInstagram} from '@fortawesome/free-brands-svg-icons';
+import { faDatabase } from "@fortawesome/free-solid-svg-icons";
+import { faTwitter ,faFacebook , faInstagram ,faReact ,faPython } from '@fortawesome/free-brands-svg-icons';
 
 const About = () => {
   return (
@@ -19,7 +20,7 @@ const About = () => {
             <div className="info_data">
                  <div className="data">
                     <h4>Email</h4>
-                    <p>fal-ghazi@htwsaar.de</p>
+                    <p>Feras@gmail.com</p>
                  </div>
                  <div className="data">
                    <h4>Phone</h4>
@@ -52,7 +53,34 @@ const About = () => {
       </div>
     </div>
 </div>
-    
+<div className="cards">
+<h1> Tools and Technology and frameworks</h1>
+<div>
+  <fieldset>
+    <legend>Frontend</legend>
+    <FontAwesomeIcon icon={faReact} />
+    <label>React.js </label>
+  </fieldset>
+</div>
+<div>
+  <fieldset>
+    <legend>webserver</legend>
+    <FontAwesomeIcon icon={faPython} />
+    <label>python flask </label>
+  </fieldset>
+</div>
+<div>
+  <fieldset>
+    <legend>Database</legend>
+    <FontAwesomeIcon icon={faDatabase} />
+    <label>mysql </label>
+  </fieldset>
+</div>
+
+
+
+
+</div>
      </main>);
 };
 export default About;
