@@ -12,9 +12,10 @@ const About = () => {
    
         <img src={imageSrc}  alt="user" width="100" />
         <h4>Feras Al Ghazi</h4>
-        <h4>Kommunikationsinformatik B.Sc.</h4>
+           <p>Student Developer</p>
+        <a href="https://www.htwsaar.de/studium-und-lehre/studienangebot/studiengaenge/kommunikationsinformatik_bachelor" target="_blank" >Kommunikationsinformatik B.Sc.<a>
 
-         <p>Student Developer</p>
+  
     </div>
     <div className="right">
         <div className="info">
@@ -40,7 +41,7 @@ const About = () => {
                  </div>
                  <div className="data">
                    <h4>Betreuung</h4>
-                    <a href="https://www.htwsaar.de/ingwi/fakultaet/personen/profile/albrecht.kunz">Prof. Dr. Albrecht Kunz</a>
+                    <a href="https://www.htwsaar.de/ingwi/fakultaet/personen/profile/albrecht.kunz" target="_blank" >Prof. Dr. Albrecht Kunz</a>
               </div>
             </div>
         </div>
