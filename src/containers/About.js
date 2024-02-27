@@ -13,7 +13,7 @@ const About = () => {
         <img src={imageSrc}  alt="user" width="100" />
         <h4>Feras Al Ghazi</h4>
            <p>Student Developer</p>
-        <a href="https://www.htwsaar.de/studium-und-lehre/studienangebot/studiengaenge/kommunikationsinformatik_bachelor" target="_blank" >Kommunikationsinformatik B.Sc.<a>
+<a href="https://www.htwsaar.de/studium-und-lehre/studienangebot/studiengaenge/kommunikationsinformatik_bachelor" target="_blank" >Kommunikationsinformatik B.Sc.</a>
 
   
     </div>
