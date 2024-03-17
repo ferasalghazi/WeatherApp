@@ -200,8 +200,17 @@ const LiveWeather = () => {
               value={selectedStation}
               onChange={(e) => setselectedStation(e.target.value)}
             >
-              <option value="1">Main Station</option>
-              <option value="2">Second Station</option>
+              <option value="1"> Station 1</option>
+              <option value="2"> Station 2</option>
+                    <option value="3"> Station 3</option>
+                    <option value="4"> Station 4</option>
+                    <option value="5"> Station 5</option>
+                    <option value="6"> Station 6</option>
+                                    <option value="7"> Station 7</option>
+                    <option value="8"> Station 8</option>
+                    <option value="9"> Station 9</option>
+                    <option value="10"> Station 10</option>
+
             </select>
           </div>
           <div className="card-list">
