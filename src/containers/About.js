@@ -69,7 +69,7 @@ const About = () => {
     </div>
 </div>
 <div className="cards">
-<h1> Tools and Technology and frameworks</h1>
+<h1> Tools and Technology </h1>
 <div>
   <fieldset>
     <legend>Frontend</legend>
@@ -91,9 +91,28 @@ const About = () => {
     <label>mysql </label>
   </fieldset>
 </div>
-
-
-
+  <h1> Hardware </h1>  
+<div>
+  <fieldset>
+    <legend>Board  </legend>
+    
+    <label> ARDUINO UNO R4 WiFi  </label>
+  </fieldset>
+</div>
+<div>
+  <fieldset>
+    <legend> Board </legend>
+    
+    <label> WiFi ESP WROOM 32   </label>
+  </fieldset>
+</div>
+<div>
+  <fieldset>
+    <legend> Sensor </legend>
+    
+    <label> BME 680   </label>
+  </fieldset>
+</div>
 
 </div>
      </main>);
