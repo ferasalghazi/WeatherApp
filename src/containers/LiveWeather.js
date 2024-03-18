@@ -206,7 +206,7 @@ const LiveWeather = () => {
                     <option value="4"> Station 4</option>
                     <option value="5"> Station 5</option>
                     <option value="6"> Station 6</option>
-                                    <option value="7"> Station 7</option>
+                    <option value="7"> Station 7</option>
                     <option value="8"> Station 8</option>
                     <option value="9"> Station 9</option>
                     <option value="10"> Station 10</option>
