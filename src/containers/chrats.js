@@ -65,7 +65,7 @@ const Charts = () => {
       },
       title: {
         display: true,
-        text: "Temperature and Humidity in Germany",
+        text: "Aktuelle Wetterdaten",
       },
     },
     scales: {
