@@ -17,7 +17,7 @@ const Home = () => {
       const snowdayslen = data.data.filter((item) => item.tempdeg < 10);
       const rainingdays = data.data.filter((item) => item.humdeg > 80);
       const hazydayslen = data.data.filter((item) => item.humdeg < 25);
-      const cloudydayslen = data.data.filter((item) => item.tempdeg > 25 && item.humdeg > 80 );
+      const cloudydayslen = data.data.filter((item) => item.tempdeg > 25 && item.humdeg > 100 );
 
       sethotdays(hotsdayslen.length);
       setsnowdays(snowdayslen.length);
