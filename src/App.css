@@ -114,8 +114,8 @@ main {
 }
 .home h1 {
   font-family: "Raleway", sans-serif;
-  position: fixed;
-  left: 30%;
+  text-align:center;
+  width: 100%;
 }
 .hot {
   position: absolute;
